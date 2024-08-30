@@ -76,15 +76,36 @@ class BigramLanguageModel(nn.Module):
             loss = F.cross_entropy(logits, targets)
 
         return logits, loss
-"""
+
 def generate(self, idx, max_new_tokens):
     # idx is (B, T) array of indices in the current context
     for _ in range(max_new_tokens):
         logits, loss = self(idx)
-        logi
+        logits = logits[:, -1, :]
+        probs = F.softmax(logits, dim=-1)
+        idx_next = torch.multinomial(probs, num_samples=1)
+        idx = torch.cat([idx, idx_next], dim=1)
+    return idx
 
-    def forward(self, x, y):
-        emb = self.emb(x)
-        logits = self.fc(emb)
-        loss = F.cross_entropy(logits.view(-1, vocab_size), y.view(-1))
-        return logits, loss"""
+model = BigramLanguageModel(vocab_size)
+m = model.to(device)
+
+# A PyTorch optimizer for the model
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+for iter in range(max_iters):
+    if iter % eval_interval == 0:
+        losses = estimate_loss()
+        print(f'Step: {iter}, Train loss: {losses["train"]:.4f}, Val loss: {losses["val"]:.4f}')
+
+    xb, yb = get_batch('train')
+
+    # Evaluate the loss
+    logits, loss = model(xb, yb)
+    optimizer.zero_grad(set_to_none=True)
+    loss.backward()
+    optimizer.step()
+
+# Generate from the model
+context = torch.zeros((1, 1), dtype=torch.long, device=device)
+print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
