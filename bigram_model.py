@@ -109,3 +109,6 @@ for iter in range(max_iters):
 # Generate from the model
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
 print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
+
+# Save the model
+torch.save(model.state_dict(), 'models/bigram_language_model.pth')
