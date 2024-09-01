@@ -3,8 +3,8 @@ import torch.nn as nn
 from torch.nn import functional as F
 from tqdm import tqdm
 
-batch_size = 64
-block_size = 256
+batch_size = int(64/4)
+block_size = int(256/4)
 max_iters = int(5000/100)
 eval_interval = int(500/100)
 learning_rate = 3e-4
