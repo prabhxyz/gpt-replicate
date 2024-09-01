@@ -5,8 +5,8 @@ from tqdm import tqdm
 
 batch_size = 64
 block_size = 256
-max_iters = 5000
-eval_interval = 500
+max_iters = int(5000/100)
+eval_interval = int(500/100)
 learning_rate = 3e-4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 eval_iters = 200
@@ -180,3 +180,6 @@ for iter in tqdm(range(max_iters)):
 
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
 print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
+
+# Save the model
+torch.save(model.state_dict(), 'models/gpt_language_model.pth')
