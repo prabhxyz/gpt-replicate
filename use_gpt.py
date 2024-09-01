@@ -132,7 +132,7 @@ model.load_state_dict(torch.load('models/gpt_language_model.pth'))
 model = model.to(device)
 model.eval()
 
-input_text = "Once upon a time" # The Input Text - Change This.
+input_text = "Once upon a time " # The Input Text - Change This.
 input_ids = torch.tensor([encode(input_text)], dtype=torch.long).to(device)
 
 output_ids = model.generate(input_ids, max_new_tokens=100)
